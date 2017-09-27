@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <meta charset="utf-8">
+      <title>LoadImg</title>
+    </head>
+    <style>
+    ul li {
+      width: 302px;
+      height: 302px;
+      overflow: hidden;
+      margin: 5px;
+    }
+    .image {
+      animation: fade 1s;
+    }
+    @keyframes fade {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+    </style>
+    <body>
+      <div id="container"></div>
+    </body>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"/>
+    <script src="//fb.me/react-15.1.0.js"></script>
+    <script src="//fb.me/react-dom-15.1.0.js"></script>
+    <script src="//unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script type="text/babel">
+    const items = [
+      { title: 'Cat 1', image: 'http://placekitten.com/311/313' },
+      { title: 'Cat 2', image: 'http://placekitten.com/302/302' },
+      { title: 'Cat 3', image: 'http://placekitten.com/303/303' },
+      { title: 'Cat 4', image: 'http://placekitten.com/304/304' },
+      { title: 'Cat 5', image: 'http://placekitten.com/305/305' },
+      { title: 'Cat 6', image: 'http://placekitten.com/306/306' },
+      { title: 'Cat 7', image: 'http://placekitten.com/307/307' },
+      { title: 'Cat 8', image: 'http://placekitten.com/308/308' },
+      { title: 'Cat 9', image: 'http://placekitten.com/310/310' },
+      { title: 'Cat 10', image: 'http://placekitten.com/311/3132222' },
+    ];
+    class LoadImg extends React.Component {
+      constructor (props) {
+        super(props);
+      	this.state = {
+    			loading: true,
+          error: false,
+    			images: {
+          	loading: '//media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif',
+          	fail: '//media.giphy.com/media/26xBIygOcC3bAWg3S/giphy.gif'
+          }
+        };
+      }
+      componentWillMount () {
+      	var img = new Image();
+        img.src = this.props.src;
+        img.addEventListener("load", ()=>{
+        	this.setState({loading: false});
+        });
+        img.addEventListener("error", ()=> {
+        	this.setState({loading: false, error: true})
+        });
+      }
+    	render () {
+      	let image;
+      	if (this.state.loading) {
+        	image = <img width="100%" src={this.state.images.loading} />
+        } else if(!this.state.loading && !this.state.error) {
+        	image = <img className="image" width="100%" title={this.props.title} src={this.props.src} />
+        } else {
+        	image = <img width="100%" src={this.state.images.fail} />
+        }
+      	return (
+        	<div>{image}</div>
+        )
+      }
+    }
+    class App extends React.Component {
+      render() {
+        return <ul className="list-unstyled">
+        	{items.map((item, index) => (
+          	<li className="float-left" key={index}>
+              <LoadImg title={item.title} src={item.image}/>
+            </li>
+          ))}
+        </ul>
+      }
+    }
+    ReactDOM.render(<App/>, document.getElementById('container'));
+    </script>
+</html>
